@@ -4,6 +4,7 @@ package com.anwesh.uiprojects.linkedtrirecview
  * Created by anweshmishra on 11/07/18.
  */
 
+import android.app.Activity
 import android.graphics.Paint
 import android.graphics.Canvas
 import android.view.View
@@ -182,6 +183,14 @@ class LinkedRecTriView(ctx : Context) : View(ctx) {
             lrt.startUpdating {
                 animator.start()
             }
+        }
+    }
+
+    companion object {
+        fun create(activity : Activity) : LinkedRecTriView {
+            val view : LinkedRecTriView = LinkedRecTriView(activity)
+            activity.setContentView(view)
+            return view
         }
     }
 }
