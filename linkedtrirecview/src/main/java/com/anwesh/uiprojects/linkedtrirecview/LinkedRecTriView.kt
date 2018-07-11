@@ -146,7 +146,7 @@ class LinkedRecTriView(ctx : Context) : View(ctx) {
             curr.draw(canvas, paint)
         }
 
-        fun udpate(stopcb : (Int, Float) -> Unit) {
+        fun update(stopcb : (Int, Float) -> Unit) {
             curr.update {i, scale ->
                 curr = curr.getNext(dir) {
                     dir *= -1
@@ -157,6 +157,29 @@ class LinkedRecTriView(ctx : Context) : View(ctx) {
 
         fun startUpdating(startcb : () -> Unit) {
             curr.startUpdating(startcb)
+        }
+    }
+
+    data class Renderer(var view : LinkedRecTriView) {
+
+        private val animator : LRTAnimator = LRTAnimator(view)
+
+        private val lrt : LinkedRecTri = LinkedRecTri(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#212121"))
+            lrt.draw(canvas, paint)
+            animator.animate {
+                lrt.update {i,scale ->
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            lrt.startUpdating {
+                animator.start()
+            }
         }
     }
 }
