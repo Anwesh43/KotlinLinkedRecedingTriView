@@ -107,10 +107,14 @@ class LinkedRecTriView(ctx : Context) : View(ctx) {
             canvas.save()
             canvas.translate(i * gap, h/2)
             for (i in 0..1) {
-                canvas.drawLine(0f,0f, gap/2 * sc1, -gap/2 * sc2, paint)
-                canvas.drawLine(0f,0f, gap/2 * sc1, -gap/2 * sc2, paint)
+                canvas.save()
+                canvas.scale(1f, 1f - 2 * i)
+                canvas.drawLine(gap/2 * sc1, -gap/2 * sc1, gap/2, -gap/2, paint)
+                canvas.drawLine(gap/2 + gap/2 * sc2, -gap/2  + gap/2 * sc2, gap, 0f, paint)
+                canvas.restore()
             }
             canvas.restore()
+            next?.draw(canvas, paint)
         }
 
         fun update(stopcb : (Int, Float) -> Unit) {
