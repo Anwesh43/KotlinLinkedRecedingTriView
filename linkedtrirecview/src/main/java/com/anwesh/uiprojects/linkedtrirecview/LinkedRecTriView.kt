@@ -9,6 +9,7 @@ import android.graphics.Canvas
 import android.view.View
 import android.view.MotionEvent
 import android.content.Context
+import android.graphics.Color
 
 val NODES : Int = 5
 
@@ -109,8 +110,10 @@ class LinkedRecTriView(ctx : Context) : View(ctx) {
             canvas.restore()
         }
 
-        fun update(stopcb : (Float) -> Unit) {
-            state.update(stopcb)
+        fun update(stopcb : (Int, Float) -> Unit) {
+            state.update {
+                stopcb(i, it)
+            }
         }
 
         fun startUpdating(startcb : () -> Unit) {
@@ -127,6 +130,33 @@ class LinkedRecTriView(ctx : Context) : View(ctx) {
             }
             cb()
             return this
+        }
+    }
+
+    data class  LinkedRecTri(var i : Int) {
+
+        private var curr : LRTNode = LRTNode(0)
+
+        private var dir : Int = 1
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            paint.color = Color.parseColor("#4CAF50")
+            paint.strokeWidth = Math.min(canvas.width, canvas.height).toFloat() / 60
+            paint.strokeCap = Paint.Cap.ROUND
+            curr.draw(canvas, paint)
+        }
+
+        fun udpate(stopcb : (Int, Float) -> Unit) {
+            curr.update {i, scale ->
+                curr = curr.getNext(dir) {
+                    dir *= -1
+                }
+                stopcb(i, scale)
+            }
+        }
+
+        fun startUpdating(startcb : () -> Unit) {
+            curr.startUpdating(startcb)
         }
     }
 }
